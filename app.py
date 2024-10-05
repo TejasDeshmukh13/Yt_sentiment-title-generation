@@ -172,6 +172,98 @@ def login():
 
     return render_template('login.html', show_signup=False)
 
+@app.route('/forgot_password', methods=['GET', 'POST'])
+def forgot_password():
+    if request.method == 'POST':
+        email = request.form['email']
+        token = secrets.token_urlsafe(16)  # Generate a secure token
+        expiration = datetime.now() + timedelta(hours=1)  # Token valid for 1 hour
+
+        # Delete previous tokens before inserting the new one
+        cursor = mysql.connection.cursor()
+        cursor.execute("DELETE FROM password_resets WHERE email = %s", (email,))
+        mysql.connection.commit()
+
+        # Insert the new token
+        cursor.execute("INSERT INTO password_resets (email, token, expiration) VALUES (%s, %s, %s)", (email, token, expiration))
+        mysql.connection.commit()
+        cursor.close()
+
+
+        # Send the reset email with a friendly message and an image
+        reset_link = url_for('reset_password', token=token, _external=True)
+        msg = Message('Password Reset Request', sender='your_email@gmail.com', recipients=[email])
+
+        msg.body = f"""
+        Hi,
+
+        It looks like you forgot your password, but don't worry! Just click the link below to reset it:
+
+        {reset_link}
+
+        If you didn't request this, feel free to ignore this email.
+
+        Best regards,
+        Your Website Team
+        """
+
+        msg.html = f"""
+        <p>Hi,</p>
+        <p>It looks like you forgot your password, but don't worry! Just click the link below to reset it:</p>
+        <a href="{reset_link}">Reset Password</a>
+        <p>If you didn't request this, feel free to ignore this email.</p>
+        <p>Best regards,</p>
+        <p>Your Website Team</p>
+        <img src="cid:image1" alt="Reset Password" style="width: 300px; height: auto;">
+        """
+
+        # Attach the image from the static directory
+        with app.open_resource("static/image.png") as img:
+            msg.attach("image.png", "image/png", img.read(), headers={'Content-ID': '<image1>'})
+
+        mail.send(msg)
+
+        flash('A password reset link has been sent to your email.', 'success')
+        return redirect(url_for('login'))
+
+    return render_template('forgot_password.html')
+
+@app.route('/reset-password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    if request.method == 'POST':
+        new_password = request.form['new_password']
+
+        # Validate the token
+        cursor = mysql.connection.cursor()
+        cursor.execute("SELECT email FROM password_resets WHERE token = %s AND expiration > NOW()", (token,))
+        result = cursor.fetchone()
+        print(f"Received token: {token}")
+        cursor.close()  # Close the cursor after fetching the result
+
+        if result:
+            email = result[0]
+
+            # Hash the new password before storing it
+            hashed_password = bcrypt.generate_password_hash(new_password).decode('utf-8')
+
+            # Update the user's password in the database
+            cursor = mysql.connection.cursor()
+            cursor.execute("UPDATE users SET password = %s WHERE email = %s", (hashed_password, email))
+            mysql.connection.commit()
+
+            # Delete the token from the database after password reset
+            cursor.execute("DELETE FROM password_resets WHERE token = %s", (token,))
+            mysql.connection.commit()
+            cursor.close()
+
+            flash('Your password has been reset successfully.', 'success')
+            return redirect(url_for('login'))
+        else:
+            flash('Invalid or expired token.', 'danger')
+            return redirect(url_for('login'))
+
+    return render_template('reset_password.html', token=token)
+
 #-------->Logout
 @app.route('/logout')
 def logout():
