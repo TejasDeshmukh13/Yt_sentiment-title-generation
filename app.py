@@ -70,46 +70,44 @@ api_keys_list = [
     'AIzaSyBqUeaTyMK3LsGYklFRK0VNnG7NvFabhPc',
     'AIzaSyDwCjHQPnBafctVvGv1hdSnhg84CMs4Bzw',
     'AIzaSyCcBrt-UsC9soIxO-y5wu3z8xGzyuu2rIE',
+    'AIzaSyAJq2X5k3nJTaB2O9EGI4JV__FQkNikHFA',
     # Add more API keys as needed
 ]
+api_key = random.choice(api_keys_list)
+print(f"Using API key: {api_key}")
+youtube = build('youtube', 'v3', developerKey=api_key)
 
 # Dictionary to track the usage of each API key
-appi_key_dict = {key: 0 for key in api_keys_list}  # Initialize usage counts
+appi_key_dict = {key: 0 for key in api_keys_list}  # Initialize usage counts()
 
-def get_youtube_service(api_key):
-    """Build the YouTube service using the provided API key."""
-    return build('youtube', 'v3', developerKey=api_key)
+# def call_youtube_api(method, **kwargs):
+#     """Call a YouTube API method and handle quota limits."""
+#     for api_key in api_keys_list:
+#         try:
+#             # Call the specified method
+#             response = getattr(youtube, method)(**kwargs).execute()
+            
+#             # Increment the usage count for the successful API key
+#             appi_key_dict[api_key] += 1
+            
+#             # Print the usage after each successful call
+#             print(f"API key {api_key} has been used {appi_key_dict[api_key]} times.")
+            
+#             return response  # Return the response if successful
+#         except HttpError as e:
+#             # Check if it's a quota error
+#             if e.resp.status == 403 and 'quota' in e.content.decode():
+#                 print(f"API key {api_key} has reached its quota limit.")
+#                 continue  # Try the next key
+#             else:
+#                 print(f"Error with API key {api_key}: {e}")
+#                 continue  # Handle other errors gracefully
 
-def call_youtube_api(method, **kwargs):
-    """Call a YouTube API method and handle quota limits."""
-    for api_key in api_keys_list:
-        try:
-            # Build the YouTube service
-            youtube = get_youtube_service(api_key)
-            
-            # Call the specified method
-            response = getattr(youtube, method)(**kwargs).execute()
-            
-            # Increment the usage count for the successful API key
-            appi_key_dict[api_key] += 1
-            
-            # Print the usage after each successful call
-            print(f"API key {api_key} has been used {appi_key_dict[api_key]} times.")
-            
-            return response  # Return the response if successful
-        except HttpError as e:
-            # Check if it's a quota error
-            if e.resp.status == 403 and 'quota' in e.content.decode():
-                print(f"API key {api_key} has reached its quota limit.")
-                continue  # Try the next key
-            else:
-                print(f"Error with API key {api_key}: {e}")
-                continue  # Handle other errors gracefully
-
-    raise Exception("All API keys are exhausted or invalid.")
+#     raise Exception("All API keys are exhausted or invalid.")
 
 @app.route('/')
 def landing_page():
+
     return render_template('landing_page.html')
 
 #--------->Signing Up
@@ -214,7 +212,7 @@ def forgot_password():
         <p>If you didn't request this, feel free to ignore this email.</p>
         <p>Best regards,</p>
         <p>Your Website Team</p>
-        <img src="cid:image1" alt="Reset Password" style="width: 300px; height: auto;">
+        <img src="cid:image1" alt="Reset Password" style="width: 600px; height: 600px;">
         """
 
         # Attach the image from the static directory
@@ -441,9 +439,8 @@ def get_channel_id_from_custom_url(username):
 
 def get_channel_id_from_playlist(playlist_id):
     # Get the YouTube service with a valid API key
-    youtube_service, api_key = get_youtube_service()
     try:
-        response = youtube_service.playlists().list(part="snippet", id=playlist_id).execute()
+        response = youtube.playlists().list(part="snippet", id=playlist_id).execute()
         return response['items'][0]['snippet']['channelId'] if 'items' in response else None
     except Exception as e:
         print(f"Error fetching channel from playlist: {e}")
@@ -451,9 +448,9 @@ def get_channel_id_from_playlist(playlist_id):
 
 def get_channel_id_from_video(video_id):
     # Get the YouTube service with a valid API key
-    youtube_service, api_key = get_youtube_service()
+    
     try:
-        response = youtube_service.videos().list(part="snippet", id=video_id).execute()
+        response = youtube.videos().list(part="snippet", id=video_id).execute()
         return response['items'][0]['snippet']['channelId'] if 'items' in response else None
     except Exception as e:
         print(f"Error fetching channel from video: {e}")
@@ -461,9 +458,9 @@ def get_channel_id_from_video(video_id):
 
 def get_channel_stats(channel_id):
     # Get the YouTube service with a valid API key
-    youtube_service, api_key = get_youtube_service()
+    
     try:
-        response = youtube_service.channels().list(
+        response = youtube.channels().list(
             part="snippet,contentDetails,statistics", id=channel_id
         ).execute()
         data = response['items'][0] if 'items' in response else None
@@ -482,9 +479,9 @@ def get_channel_stats(channel_id):
 
 def get_profile_picture(channel_id):
     # Get the YouTube service with a valid API key
-    youtube_service, api_key = get_youtube_service()
+    
     try:
-        response = youtube_service.channels().list(part="snippet", id=channel_id).execute()
+        response = youtube.channels().list(part="snippet", id=channel_id).execute()
         return response['items'][0]['snippet']['thumbnails']['high']['url'] if 'items' in response else None
     except Exception as e:
         print(f"Error fetching profile picture: {e}")
@@ -492,9 +489,9 @@ def get_profile_picture(channel_id):
 
 def get_banner_image(channel_id):
     # Get the YouTube service with a valid API key
-    youtube_service, api_key = get_youtube_service()
+    
     try:
-        response = youtube_service.channels().list(part="brandingSettings", id=channel_id).execute()
+        response = youtube.channels().list(part="brandingSettings", id=channel_id).execute()
         return response['items'][0]['brandingSettings']['image']['bannerExternalUrl'] if 'items' in response else None
     except Exception as e:
         print(f"Error fetching banner image: {e}")
@@ -502,15 +499,15 @@ def get_banner_image(channel_id):
 
 def get_video_ids(playlist_id):
     # Get the YouTube service with a valid API key
-    youtube_service, api_key = get_youtube_service()
+    
     if not playlist_id:
         return []
     video_ids = []
     try:
-        request = youtube_service.playlistItems().list(part="contentDetails", playlistId=playlist_id, maxResults=50).execute()
+        request = youtube.playlistItems().list(part="contentDetails", playlistId=playlist_id, maxResults=50).execute()
         video_ids.extend([item['contentDetails']['videoId'] for item in request['items']])
         while 'nextPageToken' in request:
-            request = youtube_service.playlistItems().list(
+            request = youtube.playlistItems().list(
                 part="contentDetails", playlistId=playlist_id, maxResults=50, pageToken=request['nextPageToken']
             ).execute()
             video_ids.extend([item['contentDetails']['videoId'] for item in request['items']])
@@ -520,11 +517,11 @@ def get_video_ids(playlist_id):
 
 def get_video_details(video_ids):
     # Get the YouTube service with a valid API key
-    youtube_service, api_key = get_youtube_service()
+    
     all_video_stats = []
     try:
         for i in range(0, len(video_ids), 50):
-            request = youtube_service.videos().list(
+            request = youtube.videos().list(
                 part="snippet,statistics", id=','.join(video_ids[i:i+50])
             ).execute()
             for video in request.get('items', []):
@@ -546,10 +543,10 @@ def get_video_details(video_ids):
 def get_videos_from_channel(channel_id):
 
     # Get the YouTube service with a valid API key
-    youtube_service, api_key = get_youtube_service()
+    
     all_videos = []
     try:
-        response = youtube_service.search().list(
+        response = youtube.search().list(
             part="snippet", channelId=channel_id, maxResults=50, order="date", type="video"
         ).execute()
         for video in response['items']:
@@ -565,7 +562,7 @@ def get_videos_from_channel(channel_id):
             }
             all_videos.append(video_stats)
         while 'nextPageToken' in response:
-            response = youtube_service.search().list(
+            response = youtube.search().list(
                 part="snippet",
                 channelId=channel_id,
                 maxResults=50,
@@ -595,6 +592,7 @@ def search():
     channel_id = extract_channel_id(channel_url)
 
     #FOR DEBUGGING
+    print(f"Using API Key: {api_key}")
     print("Given link: ", channel_url)
     print("Extracted Channel Id: ", channel_id)
 
@@ -689,6 +687,7 @@ def summarize_text(text):
 @app.route('/summarize', methods=['POST'])
 def summarize_video():
     start_time = time.time()
+    print(f"Using API Key: {api_key}")
     data = request.form
     youtube_video_url = data.get('youtube_video_url')
     video_id = extract_video_id(youtube_video_url)
@@ -730,7 +729,6 @@ def clean_text(text):
 
 # Fetch comments from YouTube API
 def video_comments(video_id):
-    youtube = build('youtube', 'v3', developerKey='AIzaSyA2mtinmYujwJi38vTB-I-hUtEM6an-LJU')
     comments = []
     next_page_token = None
     while True:
@@ -835,10 +833,9 @@ def get_video_title(video_id):
     """Retrieve the title of a YouTube video using its video ID."""
 
     # Get the YouTube service with a valid API key
-    youtube_service, api_key = get_youtube_service()
     try:
-        print(f"Getting Video Title With API Key: {api_key}")
-        request = youtube_service.videos().list(part='snippet', id=video_id)
+        print(f"Using API Key: {api_key}")
+        request = youtube.videos().list(part='snippet', id=video_id)
         response = request.execute()
 
         if 'items' in response and len(response['items']) > 0:
