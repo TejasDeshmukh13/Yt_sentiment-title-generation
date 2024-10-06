@@ -1,4 +1,4 @@
-# YouTube Sentiment and Title Generation
+# YouTube Sentiment Analyser and Title Generator
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/TejasDeshmukh13/Yt_sentiment-title-generation/blob/main/LICENSE)
 
@@ -62,24 +62,23 @@ python app.py
 http://127.0.0.1:5000/
 ```
 
-##Usage
+## Usage
 
-###Sentiment Analysis
+### Sentiment Analysis
 
-<ul>
-  Enter the URL of a YouTube video to analyze its comment sentiments.
-  The app will fetch the video comments and display a sentiment distribution chart (Positive, Negative, Neutral).
-</ul>
+- Enter the URL of a YouTube video to analyze its comment sentiments.<br>
+- The app will fetch the video comments and display a sentiment distribution chart (Positive, Negative, Neutral).
 
-###Title Generation
+### Title Generation
 
-<ul>For the same YouTube video, the app will recommend suitable titles based on the content of the video.</ul>
+- For the same YouTube video, the app will recommend suitable titles based on the content of the video.
 
-###Transcript Summarization
+### Transcript Summarization
 
-<ul>Input the video link, and the app will fetch and summarize the video's transcript using NLP techniques, giving a concise overview of the content.</ul>
+- Input the video link, and the app will fetch and summarize the video's transcript using NLP techniques, giving a concise overview of the content.
 
-##Project Structure
+## Project Structure
+
 ```bash
 Yt_sentiment-title-generation/
 ├── app.py                    # Main Flask application file
@@ -88,22 +87,56 @@ Yt_sentiment-title-generation/
 ├── trainmodel.py             # Model training script
 ├── requirements.txt          # Dependencies for the project
 ├── templates/                # Folder for HTML templates
-│   ├── link.html             # HTML for link submission
-│   └── res.html              # HTML for displaying results
+│   ├── forgot_password.html   # HTML for password recovery
+│   ├── index.html            # Main landing page
+│   ├── landing_page.html     # Landing page for the app
+│   ├── login.html            # User login page
+│   ├── page1.html            # Additional page 1
+│   ├── page2.html            # Additional page 2
+│   ├── profile.html          # User profile page
+│   ├── res.html              # HTML for displaying results
+│   ├── reset_password.html    # HTML for resetting passwords
+│   ├── senti_result.html      # Results page for sentiment analysis
+│   ├── sentiment.html         # Sentiment analysis input page
+│   ├── signup.html           # User signup page
+│   ├── summary.html          # Summary of results
+│   ├── titlepage.html        # Title generation page
+│   └── link.html             # HTML for link submission
 ├── static/                   # Folder for static files
 │   ├── css/                  # CSS files
-│   │   └── styles.css        # Main stylesheet
+│   │   ├── landing_page.css   # CSS for landing page
+│   │   ├── login.css          # CSS for login page
+│   │   ├── page1.css          # CSS for dashboard
+│   │   ├── page2.css          # CSS for channel stats
+│   │   ├── profile.css        # CSS for profile page
+│   │   ├── res.css            # CSS for results page
+│   │   ├── signup.css         # CSS for signup page
+│   │   └── styles.css         # Main stylesheet
 │   ├── js/                   # JavaScript files
-│   │   └── scripts.js        # Main script file
-│   └── images/               # Image files
-│       ├── logo.png          # Example image
+│   │   ├── landing_page.js    # JavaScript for landing page
+│   │   ├── login.js           # JavaScript for login page
+│   │   ├── page1.js           # JavaScript for dahsboard
+│   │   ├── page2.js           # JavaScript for channel stats
+│   │   ├── profile.js         # JavaScript for profile page
+│   │   ├── res.js             # JavaScript for results page
+│   │   └── scripts.js         # Main script file
+│   └── images/               # Image files 
+│       ├── Brochure Zephyr-1.pdf_compressed.pdf # Brochure PDF
+│       ├── Demo Video.mp4     # Demo video of the project
+│       ├── F1.png             # Example image
+│       ├── channel.jpg        # Channel image
+│       ├── image.png          # Other image file
+│       ├── sentiment.jpg      # Sentiment analysis image
+│       ├── sentiment_pie_chart.png # Pie chart for sentiment
+│       ├── summarizer.png     # Image for summarization
+│       ├── title.png          # Title generation image
 │       └── other_image.png    # Another image file
 ├── utils/                    # Utility functions
 │   └── helpers.py            # Helper functions for the app
 └── README.md                 # Project documentation
 ```
 
-##Contributors
+## Contributors
 <ul>
 <a href="https://github.com/kisanjena">KisanKumar Jena</a><br>
 <a href="https://github.com/sakshe27">Sakshi Kadam</a><br>
