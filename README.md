@@ -43,33 +43,44 @@ cd Yt_sentiment-title-generation
 ```
 
 2. Install dependencies:
-
+```bash
 pip install -r requirements.txt
-3. Set up environment variables for your API keys and other configuration settings:
+```
 
+3. Set up environment variables for your API keys and other configuration settings:
+```bash
 export YOUTUBE_API_KEY='your_api_key_here'
+```
 
 4. Run the Flask app:
-
+```bash
 python app.py
+```
 
 5. Visit the app in your browser:
-
+```bash
 http://127.0.0.1:5000/
+```
 
-<h1>Usage</h1>
-##Sentiment Analysis
+##Usage
+
+###Sentiment Analysis
+
 <ul>
   Enter the URL of a YouTube video to analyze its comment sentiments.
   The app will fetch the video comments and display a sentiment distribution chart (Positive, Negative, Neutral).
 </ul>
-##Title Generation
+
+###Title Generation
+
 <ul>For the same YouTube video, the app will recommend suitable titles based on the content of the video.</ul>
-##Transcript Summarization
+
+###Transcript Summarization
+
 <ul>Input the video link, and the app will fetch and summarize the video's transcript using NLP techniques, giving a concise overview of the content.</ul>
 
 ##Project Structure
-```
+```bash
 Yt_sentiment-title-generation/
 ├── app.py                    # Main Flask application file
 ├── channel.py                # Channel statistics logic
