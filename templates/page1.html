@@ -70,15 +70,102 @@
                             </li>
                         </ul>
                     </li>
-
                     <li>
-                        <a href="#">
+                        <a href="#feedback" onclick="toggleFeedbackForm();">
                             <i class="ri-feedback-line"></i>
                             <span class="link-name">Feedback</span>
                         </a>
+                        <!-- Feedback Form Container (Initially Hidden) -->
+                        <div id="feedback-container" class="centered-container" style="display: none;">
+                            <div class="feedback-box">
+                                <form action="{{ url_for('submit_feedback') }}" method="POST" id="feedback-form">
+                                    <h3>Give Your Feedback</h3>
+
+                                    <!-- Single Label for Ratings -->
+                                    <label>Rate the following (1 to 5):</label>
+
+                                    <!-- Question 1: Sentiment Analysis -->
+                                    <div class="rating-question">
+                                        <p>Sentiment Analysis</p>
+                                        <div class="rating-options">
+                                            <input type="radio" id="sentiment1" name="rating_sentiment" value="1" required>
+                                            <label for="sentiment1">1</label>
+                                            <input type="radio" id="sentiment2" name="rating_sentiment" value="2">
+                                            <label for="sentiment2">2</label>
+                                            <input type="radio" id="sentiment3" name="rating_sentiment" value="3">
+                                            <label for="sentiment3">3</label>
+                                            <input type="radio" id="sentiment4" name="rating_sentiment" value="4">
+                                            <label for="sentiment4">4</label>
+                                            <input type="radio" id="sentiment5" name="rating_sentiment" value="5">
+                                            <label for="sentiment5">5</label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Question 2: Channel Analysis -->
+                                    <div class="rating-question">
+                                        <p>Channel Analysis</p>
+                                        <div class="rating-options">
+                                            <input type="radio" id="channel1" name="rating_channel" value="1" required>
+                                            <label for="channel1">1</label>
+                                            <input type="radio" id="channel2" name="rating_channel" value="2">
+                                            <label for="channel2">2</label>
+                                            <input type="radio" id="channel3" name="rating_channel" value="3">
+                                            <label for="channel3">3</label>
+                                            <input type="radio" id="channel4" name="rating_channel" value="4">
+                                            <label for="channel4">4</label>
+                                            <input type="radio" id="channel5" name="rating_channel" value="5">
+                                            <label for="channel5">5</label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Question 3: Video Summarizer -->
+                                    <div class="rating-question">
+                                        <p>Video Summarizer</p>
+                                        <div class="rating-options">
+                                            <input type="radio" id="summarizer1" name="rating_summarizer" value="1" required>
+                                            <label for="summarizer1">1</label>
+                                            <input type="radio" id="summarizer2" name="rating_summarizer" value="2">
+                                            <label for="summarizer2">2</label>
+                                            <input type="radio" id="summarizer3" name="rating_summarizer" value="3">
+                                            <label for="summarizer3">3</label>
+                                            <input type="radio" id="summarizer4" name="rating_summarizer" value="4">
+                                            <label for="summarizer4">4</label>
+                                            <input type="radio" id="summarizer5" name="rating_summarizer" value="5">
+                                            <label for="summarizer5">5</label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Question 4: Title Recommendation -->
+                                    <div class="rating-question">
+                                        <p>Title Recommendation</p>
+                                        <div class="rating-options">
+                                            <input type="radio" id="title1" name="rating_title" value="1" required>
+                                            <label for="title1">1</label>
+                                            <input type="radio" id="title2" name="rating_title" value="2">
+                                            <label for="title2">2</label>
+                                            <input type="radio" id="title3" name="rating_title" value="3">
+                                            <label for="title3">3</label>
+                                            <input type="radio" id="title4" name="rating_title" value="4">
+                                            <label for="title4">4</label>
+                                            <input type="radio" id="title5" name="rating_title" value="5">
+                                            <label for="title5">5</label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Feedback Text Box for Additional Comments -->
+                                    <label for="feedback_text">Your Feedback (Optional):</label>
+                                    <textarea id="feedback_text" name="feedback_text" rows="4" placeholder="Write any additional feedback here..."></textarea>
+
+                                    <!-- Submit Button -->
+                                    <input type="submit" value="Submit Feedback">
+                                </form>
+                                <!-- Thank you -->
+                                <div id="thank-you-message" class="thank-you" style="display: none;"></div>
+                            </div>
+                        </div>
+                        <!--End of Feedback Container-->
                     </li>
                 </ul>
-
                 <!-- Logout and Dark Mode -->
                 <ul class="logout-Dark-Mode">
                     <li>

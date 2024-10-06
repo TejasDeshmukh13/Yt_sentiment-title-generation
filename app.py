@@ -1,7 +1,8 @@
 import io
 import string
 from turtle import pd
-from flask import Flask, jsonify, render_template, request, redirect, send_file, send_from_directory, session, url_for, flash
+from flask import Flask, jsonify, render_template, request, redirect, send_file, send_from_directory, session, url_for, \
+    flash
 from flask_mysqldb import MySQL
 from flask_bcrypt import Bcrypt
 import random
@@ -25,7 +26,7 @@ import matplotlib
 from matplotlib import font_manager
 import re
 from bs4 import BeautifulSoup
-from datetime import timedelta,datetime
+from datetime import timedelta, datetime
 import pytz
 from transformers import pipeline
 from youtube_transcript_api import YouTubeTranscriptApi
@@ -40,12 +41,10 @@ from flask_mail import Mail, Message
 from transformers import T5ForConditionalGeneration, T5Tokenizer
 import language_tool_python
 
-
 summarizer = pipeline('summarization', model="sshleifer/distilbart-cnn-12-6")
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
-
 
 # MySQL configurations
 app.config['MYSQL_HOST'] = '127.0.0.1'
@@ -58,12 +57,11 @@ app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USERNAME'] = 'sskadam2735@gmail.com'  # Replace with your Gmail address
-app.config['MAIL_PASSWORD'] = 'xdnqvckbeatxnfsl'     # Replace with your 16-character App Password
+app.config['MAIL_PASSWORD'] = 'xdnqvckbeatxnfsl'  # Replace with your 16-character App Password
 
 mail = Mail(app)
 mysql = MySQL(app)
 bcrypt = Bcrypt(app)
-
 
 # Define the API keys list
 api_keys_list = [
@@ -74,43 +72,57 @@ api_keys_list = [
     # Add more API keys as needed
 ]
 api_key = random.choice(api_keys_list)
-print(f"Using API key: {api_key}")
+print(f"Using API key at Start: {api_key}")
 youtube = build('youtube', 'v3', developerKey=api_key)
 
-# Dictionary to track the usage of each API key
-appi_key_dict = {key: 0 for key in api_keys_list}  # Initialize usage counts()
+#---------->Feedback
+@app.route('/submit_feedback', methods=['POST'])
+def submit_feedback():
+    # Check if the user is logged in by checking the session
+    if 'user_email' not in session:
+        flash('You need to log in to submit feedback.', 'danger')
+        return redirect(url_for('login'))
 
-# def call_youtube_api(method, **kwargs):
-#     """Call a YouTube API method and handle quota limits."""
-#     for api_key in api_keys_list:
-#         try:
-#             # Call the specified method
-#             response = getattr(youtube, method)(**kwargs).execute()
-            
-#             # Increment the usage count for the successful API key
-#             appi_key_dict[api_key] += 1
-            
-#             # Print the usage after each successful call
-#             print(f"API key {api_key} has been used {appi_key_dict[api_key]} times.")
-            
-#             return response  # Return the response if successful
-#         except HttpError as e:
-#             # Check if it's a quota error
-#             if e.resp.status == 403 and 'quota' in e.content.decode():
-#                 print(f"API key {api_key} has reached its quota limit.")
-#                 continue  # Try the next key
-#             else:
-#                 print(f"Error with API key {api_key}: {e}")
-#                 continue  # Handle other errors gracefully
+    # Log request data
+    app.logger.info("Received feedback: %s", request.form)
 
-#     raise Exception("All API keys are exhausted or invalid.")
+    # Get feedback data from the form
+    rating_sentiment = request.form.get('rating_sentiment')
+    rating_channel = request.form.get('rating_channel')
+    rating_summarizer = request.form.get('rating_summarizer')
+    rating_title = request.form.get('rating_title')
+    feedback_text = request.form.get('feedback_text')
+
+    # Fetch the logged-in user's email from the session
+    user_email = session['user_email']
+
+    # Check if all ratings are provided
+    if not all([rating_sentiment, rating_channel, rating_summarizer, rating_title]):
+        return "All ratings are required!", 400
+
+    try:
+        # Connect to the database
+        cur = mysql.connection.cursor()
+        query = """
+            INSERT INTO feedback (user_email, rating_sentiment, rating_channel, rating_summarizer, rating_title, feedback_text)
+            VALUES (%s, %s, %s, %s, %s, %s)
+        """
+        values = (user_email, rating_sentiment, rating_channel, rating_summarizer, rating_title, feedback_text)
+        cur.execute(query, values)
+        mysql.connection.commit()
+
+        print("Feedback Successful ")
+        cur.close()
+        return redirect(url_for('dashboard'))  # Redirect to a thank you page
+    except Exception as e:
+        app.logger.error("Error inserting feedback: %s", e)
+        return "An error occurred while submitting feedback.", 500
 
 @app.route('/')
 def landing_page():
-
     return render_template('landing_page.html')
 
-#--------->Signing Up
+# --------->Signing Up
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
@@ -131,16 +143,18 @@ def signup():
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
 
         # Insert user details into the database
-        cur.execute("INSERT INTO users (username, email, password) VALUES (%s, %s, %s)", (username, email, hashed_password))
+        cur.execute("INSERT INTO users (username, email, password) VALUES (%s, %s, %s)",
+                    (username, email, hashed_password))
         mysql.connection.commit()
         cur.close()
 
         flash('You have successfully signed up!', 'success')
         return redirect(url_for('login'))
-    
+
     return render_template('login.html', show_signup=True)
 
-#---------->Login In
+
+# ---------->Login In
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -170,6 +184,7 @@ def login():
 
     return render_template('login.html', show_signup=False)
 
+
 @app.route('/forgot_password', methods=['GET', 'POST'])
 def forgot_password():
     if request.method == 'POST':
@@ -183,10 +198,10 @@ def forgot_password():
         mysql.connection.commit()
 
         # Insert the new token
-        cursor.execute("INSERT INTO password_resets (email, token, expiration) VALUES (%s, %s, %s)", (email, token, expiration))
+        cursor.execute("INSERT INTO password_resets (email, token, expiration) VALUES (%s, %s, %s)",
+                       (email, token, expiration))
         mysql.connection.commit()
         cursor.close()
-
 
         # Send the reset email with a friendly message and an image
         reset_link = url_for('reset_password', token=token, _external=True)
@@ -226,6 +241,7 @@ def forgot_password():
 
     return render_template('forgot_password.html')
 
+
 @app.route('/reset-password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
     if request.method == 'POST':
@@ -262,35 +278,38 @@ def reset_password(token):
 
     return render_template('reset_password.html', token=token)
 
-#-------->Logout
+
+# -------->Logout
 @app.route('/logout')
 def logout():
     session.clear()  # Clear the session completely
     flash('You have been logged out.', 'info')
     return redirect(url_for('landing_page'))
 
-#--------->Dashboard page
+
+# --------->Dashboard page
 @app.route('/dashboard', methods=['GET', 'POST'])
 def dashboard():
     if 'user_id' not in session:
         flash('Please log in to access the dashboard.', 'warning')
         return redirect(url_for('login'))
-    
+
     if request.method == 'POST' and request.form.get('action') == 'get-started-2':
         return redirect(url_for('summary'))
 
     if request.method == 'POST' and request.form.get('action') == 'get-started-3':
         return redirect(url_for('page2'))
-    
+
     if request.method == 'POST' and request.form.get('action') == 'get-started-1':
         return redirect(url_for('sentiment'))
-    
+
     if request.method == 'POST' and request.form.get('action') == 'get-started-4':
         return redirect(url_for('titlepage'))
 
     return render_template('page1.html')
 
-#--------->Profile Page
+
+# --------->Profile Page
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
     if 'user_id' not in session:
@@ -336,9 +355,11 @@ def profile():
 
     return render_template('profile.html', username=username, email=email, image_url=image_url)
 
+
 def allowed_file(filename):
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 @app.route('/get_profile_image')
 def get_profile_image():
@@ -356,13 +377,15 @@ def get_profile_image():
     else:
         return redirect(url_for('static', filename='default-avatar.png'))
 
-#------------->Redirects from landing page
+
+# ------------->Redirects from landing page
 @app.route('/summary')
 def summary():
     if 'user_id' not in session:
         flash('Please log in to access the summary page.', 'warning')
         return redirect(url_for('login'))
     return render_template('summary.html')
+
 
 @app.route('/get_started')
 def get_started():
@@ -371,13 +394,15 @@ def get_started():
     else:
         return redirect(url_for('login'))
 
+
 @app.route('/page2')
 def page2():
     if 'user_id' not in session:
-        flash('Please log in to access the channel statsitcs page.', 'warning')
+        flash('Please log in to access the channel statistcs page.', 'warning')
         return redirect(url_for('login'))
-    
+
     return render_template('page2.html')
+
 
 @app.route('/sentiment')
 def sentiment():
@@ -386,6 +411,7 @@ def sentiment():
         return redirect(url_for('login'))
     return render_template('sentiment.html')
 
+
 @app.route('/titlepage')
 def titlepage():
     if 'user_id' not in session:
@@ -393,7 +419,8 @@ def titlepage():
         return redirect(url_for('login'))
     return render_template('titlepage.html')
 
-#--------------->CHANNEL ANALYSIS
+
+# --------------->CHANNEL ANALYSIS
 # Helper functions
 def extract_channel_id(url):
     patterns = {
@@ -416,6 +443,7 @@ def extract_channel_id(url):
                 return get_channel_id_from_video(match.group(1))
     return None
 
+
 def get_channel_id_from_custom_url(username):
     try:
         # Directly use the full URL instead of constructing it from the username
@@ -437,6 +465,7 @@ def get_channel_id_from_custom_url(username):
         print(f"Error scraping custom URL {username}: {e}")
     return None
 
+
 def get_channel_id_from_playlist(playlist_id):
     # Get the YouTube service with a valid API key
     try:
@@ -446,9 +475,10 @@ def get_channel_id_from_playlist(playlist_id):
         print(f"Error fetching channel from playlist: {e}")
     return None
 
+
 def get_channel_id_from_video(video_id):
     # Get the YouTube service with a valid API key
-    
+
     try:
         response = youtube.videos().list(part="snippet", id=video_id).execute()
         return response['items'][0]['snippet']['channelId'] if 'items' in response else None
@@ -456,9 +486,10 @@ def get_channel_id_from_video(video_id):
         print(f"Error fetching channel from video: {e}")
     return None
 
+
 def get_channel_stats(channel_id):
     # Get the YouTube service with a valid API key
-    
+
     try:
         response = youtube.channels().list(
             part="snippet,contentDetails,statistics", id=channel_id
@@ -477,9 +508,10 @@ def get_channel_stats(channel_id):
         print(f"Error fetching channel stats: {e}")
     return None
 
+
 def get_profile_picture(channel_id):
     # Get the YouTube service with a valid API key
-    
+
     try:
         response = youtube.channels().list(part="snippet", id=channel_id).execute()
         return response['items'][0]['snippet']['thumbnails']['high']['url'] if 'items' in response else None
@@ -487,9 +519,10 @@ def get_profile_picture(channel_id):
         print(f"Error fetching profile picture: {e}")
     return None
 
+
 def get_banner_image(channel_id):
     # Get the YouTube service with a valid API key
-    
+
     try:
         response = youtube.channels().list(part="brandingSettings", id=channel_id).execute()
         return response['items'][0]['brandingSettings']['image']['bannerExternalUrl'] if 'items' in response else None
@@ -497,9 +530,10 @@ def get_banner_image(channel_id):
         print(f"Error fetching banner image: {e}")
     return None
 
+
 def get_video_ids(playlist_id):
     # Get the YouTube service with a valid API key
-    
+
     if not playlist_id:
         return []
     video_ids = []
@@ -515,14 +549,15 @@ def get_video_ids(playlist_id):
         print(f"Error fetching video IDs: {e}")
     return video_ids
 
+
 def get_video_details(video_ids):
     # Get the YouTube service with a valid API key
-    
+
     all_video_stats = []
     try:
         for i in range(0, len(video_ids), 50):
             request = youtube.videos().list(
-                part="snippet,statistics", id=','.join(video_ids[i:i+50])
+                part="snippet,statistics", id=','.join(video_ids[i:i + 50])
             ).execute()
             for video in request.get('items', []):
                 video_stats = {
@@ -540,10 +575,10 @@ def get_video_details(video_ids):
         print(f"Error fetching video details: {e}")
     return all_video_stats
 
-def get_videos_from_channel(channel_id):
 
+def get_videos_from_channel(channel_id):
     # Get the YouTube service with a valid API key
-    
+
     all_videos = []
     try:
         response = youtube.search().list(
@@ -586,12 +621,13 @@ def get_videos_from_channel(channel_id):
         print(f"Error fetching videos from channel: {e}")
     return all_videos
 
+
 @app.route('/search', methods=['POST'])
 def search():
     channel_url = request.form['channel_url']
     channel_id = extract_channel_id(channel_url)
 
-    #FOR DEBUGGING
+    # FOR DEBUGGING
     print(f"Using API Key: {api_key}")
     print("Given link: ", channel_url)
     print("Extracted Channel Id: ", channel_id)
@@ -603,7 +639,7 @@ def search():
     profile_pic = get_profile_picture(channel_id)
     banner_image = get_banner_image(channel_id)
     channel_data = get_channel_stats(channel_id)
-    
+
     if not channel_data:
         flash('Failed to retrieve channel information. Please check the URL.', 'danger')
         return redirect(url_for('page2'))
@@ -641,33 +677,35 @@ def search():
         monthly_videos_data = {'labels': [], 'data': []}
 
     return render_template(
-        'res.html', 
-        profile_pic=profile_pic, 
-        banner_image=banner_image, 
-        channel_data=channel_data, 
-        top10_videos_data=top10_videos_data, 
+        'res.html',
+        profile_pic=profile_pic,
+        banner_image=banner_image,
+        channel_data=channel_data,
+        top10_videos_data=top10_videos_data,
         monthly_videos_data=monthly_videos_data,
         recent_videos=videos[:5],
         top_videos=top_videos  # Pass top_videos to template
     )
 
-#----------->Summary Page
-#Extraction of Video id For Summary and Sentiment
+
+# ----------->Summary Page
+# Extraction of Video id For Summary and Sentiment
 def extract_video_id(url):
     try:
         # Regular expression to extract video ID from the YouTube URL
         regex = r"(?:v=|\/)([0-9A-Za-z_-]{11}).*"
         match = re.search(regex, url)
-        
+
         if match:
             return match.group(1)
         else:
             return None  # Return None if no match is found
     except Exception as e:
         print(f"Error extracting video ID: {str(e)}")
-        return None 
+        return None
 
-#--------->Summary Page
+
+# --------->Summary Page
 def get_transcript(video_id):
     try:
         # Fetch transcript for the given video ID
@@ -678,6 +716,7 @@ def get_transcript(video_id):
         return result
     except Exception as e:
         return str(e)
+
 
 def summarize_text(text):
     num_iters = int(len(text) / 1000)
@@ -694,14 +733,15 @@ def summarize_text(text):
 
     return ' '.join(summarized_text)
 
+
 @app.route('/summarize', methods=['POST'])
 def summarize_video():
     start_time = time.time()
     print(f"Using API Key: {api_key}")
-    
+
     data = request.json
     youtube_video_url = data.get('youtube_video_url')  # Fetch the URL from the form
-    
+
     if youtube_video_url is None:
         # Print an error message and return a user-friendly response
         print("Error: No YouTube video URL provided in form data.")
@@ -712,18 +752,18 @@ def summarize_video():
     # FOR DEBUGGING
     print("Given link: ", youtube_video_url)
     print("Extracted Video Id: ", video_id)
-    print("Video Title: ",video_title)
+    print("Video Title: ", video_title)
 
     transcript = get_transcript(video_id)
     if 'error' in transcript.lower():
         return jsonify({"error": transcript}), 400
 
     summary = summarize_text(transcript)
-    print(f"total_time={time.time()-start_time}")
+    print(f"total_time={time.time() - start_time}")
     return jsonify({"summary": summary})
 
 
-#---------->Sentiment Page
+# ---------->Sentiment Page
 # Load and prepare dataset for training
 def load_and_prepare_dataset():
     # Load the dataset from Hugging Face
@@ -733,6 +773,7 @@ def load_and_prepare_dataset():
     # Print the column names to inspect them
     print(df.columns)
     return df
+
 
 # Text cleaning function
 def clean_text(text):
@@ -745,6 +786,7 @@ def clean_text(text):
         return text
     else:
         return ''  # Return empty string for None or NaN values
+
 
 # Fetch comments from YouTube API
 def video_comments(video_id):
@@ -774,6 +816,7 @@ def video_comments(video_id):
             break
     return comments
 
+
 # Sentiment analysis
 def analyze_youtube_video_sentiment(video_id, model, tfidf):
     comments = video_comments(video_id)
@@ -787,7 +830,7 @@ def analyze_youtube_video_sentiment(video_id, model, tfidf):
     predicted_sentiments = model.predict(X_comments)
 
     positive_percentage, negative_percentage, neutral_percentage = calculate_sentiment_percentages(predicted_sentiments)
-    
+
     results = {
         'positive_percentage': positive_percentage,
         'negative_percentage': negative_percentage,
@@ -798,6 +841,7 @@ def analyze_youtube_video_sentiment(video_id, model, tfidf):
     }
 
     return results
+
 
 # Calculate sentiment percentages
 def calculate_sentiment_percentages(sentiments):
@@ -819,6 +863,7 @@ def calculate_sentiment_percentages(sentiments):
 
     return positive_percentage, negative_percentage, neutral_percentage
 
+
 # Plot sentiment pie chart
 def plot_sentiment_pie_chart(positive_percentage, negative_percentage, neutral_percentage, save_path):
     labels = 'Positive', 'Negative', 'Neutral'
@@ -836,6 +881,7 @@ def plot_sentiment_pie_chart(positive_percentage, negative_percentage, neutral_p
     plt.savefig(save_path)
     plt.close()
 
+
 # Prepare dataset and train the model
 df = load_and_prepare_dataset()
 df['cleaned_text'] = df['text'].apply(clean_text)
@@ -847,6 +893,7 @@ y = df['labels']
 X_train, X_test, y_train, y_test = train_test_split(X, df['labels'], test_size=0.3, random_state=42)
 model = MultinomialNB()
 model.fit(X_train, y_train)
+
 
 def get_video_title(video_id):
     """Retrieve the title of a YouTube video using its video ID."""
@@ -865,14 +912,15 @@ def get_video_title(video_id):
         print(f"Error retrieving video title: {e}")
         return None
 
+
 @app.route('/analyze', methods=['POST'])
 def analyze():
-    yt_senti_video_url= request.form['yt_senti_video_url']
+    yt_senti_video_url = request.form['yt_senti_video_url']
 
     video_id = extract_video_id(yt_senti_video_url)
     video_title = get_video_title(video_id)
 
-    #FOR DEBUGGING
+    # FOR DEBUGGING
     print("Given link: ", yt_senti_video_url)
     print("Extracted Video Id: ", video_id)
 
@@ -884,20 +932,21 @@ def analyze():
 
     # Save the pie chart
     pie_chart_path = os.path.join('static', 'sentiment_pie_chart.png')
-    plot_sentiment_pie_chart(results['positive_percentage'], 
-                             results['negative_percentage'], 
-                             results['neutral_percentage'], 
+    plot_sentiment_pie_chart(results['positive_percentage'],
+                             results['negative_percentage'],
+                             results['neutral_percentage'],
                              pie_chart_path)
 
     return render_template('senti_result.html', video_title=video_title, results=results, pie_chart_url=pie_chart_path)
 
 
-#---------->Title Page
+# ---------->Title Page
 title_model = T5ForConditionalGeneration.from_pretrained("./fine-tuned-t5")
 tokenizer = T5Tokenizer.from_pretrained("./fine-tuned-t5")
 
 # Initialize the grammar checking tool
 tool = language_tool_python.LanguageTool('en-US')
+
 
 def generate_title(description):
     # Refined prompt for better clarity
@@ -918,10 +967,12 @@ def generate_title(description):
     title = tokenizer.decode(output[0], skip_special_tokens=True)
     return title
 
+
 def check_grammar(title):
     matches = tool.check(title)
     corrected_title = language_tool_python.utils.correct(title, matches)
     return corrected_title
+
 
 @app.route('/generate-title', methods=['GET', 'POST'])
 def title():
