@@ -58,16 +58,18 @@ python app.py
 http://127.0.0.1:5000/
 
 <h1>Usage</h1>
-Sentiment Analysis
+##Sentiment Analysis
 <ul>
   Enter the URL of a YouTube video to analyze its comment sentiments.
   The app will fetch the video comments and display a sentiment distribution chart (Positive, Negative, Neutral).
 </ul>
-Title Generation
+##Title Generation
 <ul>For the same YouTube video, the app will recommend suitable titles based on the content of the video.</ul>
-Transcript Summarization
+##Transcript Summarization
 <ul>Input the video link, and the app will fetch and summarize the video's transcript using NLP techniques, giving a concise overview of the content.</ul>
-Project Structure
+
+##Project Structure
+```
 Yt_sentiment-title-generation/
 ├── app.py                    # Main Flask application file
 ├── channel.py                # Channel statistics logic
@@ -88,8 +90,9 @@ Yt_sentiment-title-generation/
 ├── utils/                    # Utility functions
 │   └── helpers.py            # Helper functions for the app
 └── README.md                 # Project documentation
+```
 
-Contributors
+##Contributors
 <ul>
 <a href="https://github.com/kisanjena">KisanKumar Jena</a><br>
 <a href="https://github.com/sakshe27">Sakshi Kadam</a><br>
