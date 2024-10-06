@@ -9,8 +9,8 @@
         /* Global Styles */
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #f8f9fa; /* Light background for a clean look */
-            color: #333;
+            background: linear-gradient(135deg, #007BFF, #4A90E2); /* Blue gradient background */
+            color: #fff;
             margin: 0;
             padding: 0;
             display: flex;
@@ -21,13 +21,12 @@
 
         /* Container */
         .container {
-            background-color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.1);
             padding: 30px;
             border-radius: 15px;
-            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
-            max-width: 600px; /* Increased max-width for a wider container */
+            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
             width: 100%;
-            border-top: 5px solid #007bff; /* Blue top border */
         }
 
         /* Heading */
@@ -35,7 +34,7 @@
             text-align: center;
             font-size: 2rem;
             margin-bottom: 20px;
-            color: #0056b3; /* Dark blue for heading */
+            color: #fff;
         }
 
         /* Form Styles */
@@ -47,27 +46,18 @@
         label {
             font-size: 1rem;
             margin-bottom: 5px;
-            color: #333;
         }
 
         input[type="text"] {
             padding: 12px;
-            border: 2px solid #007bff;
+            border: none;
             border-radius: 8px;
             margin-bottom: 15px;
             font-size: 1rem;
-            background-color: #f1f9ff; /* Light blue input background */
-            color: #333;
-            outline: none;
-            transition: border-color 0.3s ease;
-        }
-
-        input[type="text"]:focus {
-            border-color: #5A67D8; /* Purple border on focus */
         }
 
         button {
-            background-color: #007bff;
+            background-color: #007BFF; /* Blue button */
             border: none;
             padding: 12px;
             font-size: 1rem;
@@ -79,37 +69,31 @@
         }
 
         button:hover {
-            background-color: #0056b3; /* Darker blue on hover */
+            background-color: #4A90E2; /* Lighter blue on hover */
         }
 
         /* Summary Box */
         h2 {
+            width: 95%;
             font-size: 1.5rem;
             margin-top: 20px;
-            color: #0056b3;
         }
 
         textarea {
             padding: 15px;
             border-radius: 8px;
-            border: 2px solid #00D8FF;
-            background-color: #f1f9ff; /* Light blue background for textarea */
-            color: #333;
+            border: none;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: #000; /* Changed text color to black */
             font-size: 1rem;
             margin-top: 10px;
             resize: horizontal; /* Allow resizing horizontally */
             height: 150px; /* Adjusted height for horizontal shape */
             width: 100%; /* Full width of the container */
-            outline: none;
-            transition: border-color 0.3s ease;
-        }
-
-        textarea:focus {
-            border-color: #5A67D8; /* Purple border on focus */
         }
 
         textarea::placeholder {
-            color: #7dd3fa; /* Light blue placeholder */
+            color: #ccc;
         }
     </style>
 </head>
@@ -117,10 +101,10 @@
 <body>
     <div class="container">
         <h1>YouTube Transcript Summarizer</h1>
-        <form id="transcriptForm">
-            <label for="youtube_video_url">YouTube Video ID:</label>
-            <input type="text" id="youtube_video_url" name="youtube_video_url" placeholder="Enter video ID" required>
-            <button type="submit">Get Summary</button>
+        <form id = 'transcriptForm'>
+            <label for="youtube_video_url">YouTube Video URL:</label>
+            <input type="text" id="youtube_video_url" name="youtube_video_url" required>
+            <button type="submit">Summarize</button>
         </form>
         <h2>Summary:</h2>
         <textarea id="summary" readonly placeholder="The summary will appear here..."></textarea>

@@ -15,7 +15,7 @@ import re
 import secrets
 import numpy as np
 import pandas as pd
-
+import time
 from googleapiclient.discovery import build
 
 import matplotlib.pyplot as plt
@@ -25,7 +25,7 @@ import matplotlib
 from matplotlib import font_manager
 import re
 from bs4 import BeautifulSoup
-from datetime import time,timedelta,datetime
+from datetime import timedelta,datetime
 import pytz
 from transformers import pipeline
 from youtube_transcript_api import YouTubeTranscriptApi
@@ -651,11 +651,21 @@ def search():
         top_videos=top_videos  # Pass top_videos to template
     )
 
+#----------->Summary Page
 #Extraction of Video id For Summary and Sentiment
 def extract_video_id(url):
-    regex = r"(?:v=|\/)([0-9A-Za-z_-]{11}).*"
-    match = re.search(regex, url)
-    return match.group(1) if match else None
+    try:
+        # Regular expression to extract video ID from the YouTube URL
+        regex = r"(?:v=|\/)([0-9A-Za-z_-]{11}).*"
+        match = re.search(regex, url)
+        
+        if match:
+            return match.group(1)
+        else:
+            return None  # Return None if no match is found
+    except Exception as e:
+        print(f"Error extracting video ID: {str(e)}")
+        return None 
 
 #--------->Summary Page
 def get_transcript(video_id):
@@ -688,13 +698,21 @@ def summarize_text(text):
 def summarize_video():
     start_time = time.time()
     print(f"Using API Key: {api_key}")
-    data = request.form
-    youtube_video_url = data.get('youtube_video_url')
-    video_id = extract_video_id(youtube_video_url)
+    
+    data = request.json
+    youtube_video_url = data.get('youtube_video_url')  # Fetch the URL from the form
+    
+    if youtube_video_url is None:
+        # Print an error message and return a user-friendly response
+        print("Error: No YouTube video URL provided in form data.")
+        return jsonify({"error": "No YouTube video URL provided."}), 400
 
-    #FOR DEBUGGING
+    video_id = extract_video_id(youtube_video_url)
+    video_title = get_video_title(video_id)
+    # FOR DEBUGGING
     print("Given link: ", youtube_video_url)
     print("Extracted Video Id: ", video_id)
+    print("Video Title: ",video_title)
 
     transcript = get_transcript(video_id)
     if 'error' in transcript.lower():
@@ -703,6 +721,7 @@ def summarize_video():
     summary = summarize_text(transcript)
     print(f"total_time={time.time()-start_time}")
     return jsonify({"summary": summary})
+
 
 #---------->Sentiment Page
 # Load and prepare dataset for training
