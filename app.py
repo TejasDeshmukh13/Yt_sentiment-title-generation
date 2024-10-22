@@ -764,6 +764,7 @@ def summarize_video():
 
 
 # ---------->Sentiment Page
+# Code for training the model
 # Load and prepare dataset for training
 def load_and_prepare_dataset():
     # Load the dataset from Hugging Face
@@ -773,8 +774,6 @@ def load_and_prepare_dataset():
     # Print the column names to inspect them
     print(df.columns)
     return df
-
-
 # Text cleaning function
 def clean_text(text):
     if isinstance(text, str):
@@ -786,8 +785,19 @@ def clean_text(text):
         return text
     else:
         return ''  # Return empty string for None or NaN values
+# Prepare dataset and train the model
+df = load_and_prepare_dataset()
+df['cleaned_text'] = df['text'].apply(clean_text)
 
+tfidf = TfidfVectorizer(max_features=2000)
+X = tfidf.fit_transform(df['cleaned_text'])
+y = df['labels']
 
+X_train, X_test, y_train, y_test = train_test_split(X, df['labels'], test_size=0.3, random_state=42)
+model = MultinomialNB()
+model.fit(X_train, y_train)
+
+# Actual front end code
 # Fetch comments from YouTube API
 def video_comments(video_id):
     comments = []
@@ -880,19 +890,6 @@ def plot_sentiment_pie_chart(positive_percentage, negative_percentage, neutral_p
     # Save the pie chart to a file
     plt.savefig(save_path)
     plt.close()
-
-
-# Prepare dataset and train the model
-df = load_and_prepare_dataset()
-df['cleaned_text'] = df['text'].apply(clean_text)
-
-tfidf = TfidfVectorizer(max_features=2000)
-X = tfidf.fit_transform(df['cleaned_text'])
-y = df['labels']
-
-X_train, X_test, y_train, y_test = train_test_split(X, df['labels'], test_size=0.3, random_state=42)
-model = MultinomialNB()
-model.fit(X_train, y_train)
 
 
 def get_video_title(video_id):
