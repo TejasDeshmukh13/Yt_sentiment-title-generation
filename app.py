@@ -291,7 +291,7 @@ def logout():
 @app.route('/dashboard', methods=['GET', 'POST'])
 def dashboard():
     if 'user_id' not in session:
-        flash('Please log in to access the dashboard.', 'warning')
+        flash('Please log in to access the dashboard.', 'danger')
         return redirect(url_for('login'))
 
     if request.method == 'POST' and request.form.get('action') == 'get-started-2':
@@ -313,7 +313,7 @@ def dashboard():
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
     if 'user_id' not in session:
-        flash('Access denied, user should Login', 'warning')
+        flash('Access denied, user should Login', 'danger')
         return redirect(url_for('landing_page'))
 
     user_id = session['user_id']
@@ -382,7 +382,7 @@ def get_profile_image():
 @app.route('/summary')
 def summary():
     if 'user_id' not in session:
-        flash('Please log in to access the summary page.', 'warning')
+        flash('Please log in to access the summary page.', 'danger')
         return redirect(url_for('login'))
     return render_template('summary.html')
 
@@ -398,7 +398,7 @@ def get_started():
 @app.route('/page2')
 def page2():
     if 'user_id' not in session:
-        flash('Please log in to access the channel statistcs page.', 'warning')
+        flash('Please log in to access the channel statistcs page.', 'danger')
         return redirect(url_for('login'))
 
     return render_template('page2.html')
@@ -407,7 +407,7 @@ def page2():
 @app.route('/sentiment')
 def sentiment():
     if 'user_id' not in session:
-        flash('Please log in to access the sentiment analyser page.', 'warning')
+        flash('Please log in to access the sentiment analyser page.', 'danger')
         return redirect(url_for('login'))
     return render_template('sentiment.html')
 
@@ -415,7 +415,7 @@ def sentiment():
 @app.route('/titlepage')
 def titlepage():
     if 'user_id' not in session:
-        flash('Please log in to access the title generation page.', 'warning')
+        flash('Please log in to access the title generation page.', 'danger')
         return redirect(url_for('login'))
     return render_template('titlepage.html')
 
