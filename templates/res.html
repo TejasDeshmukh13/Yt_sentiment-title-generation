@@ -222,6 +222,8 @@
     <script type="text/javascript">
     const top10VideosData = {{ top10_videos_data | tojson | safe }};
     const monthlyVideosData = {{ monthly_videos_data | tojson | safe }};
+    console.log(top10VideosData);
+    console.log(monthlyVideosData);
 
     if (top10VideosData && top10VideosData.labels && top10VideosData.data) {
         const ctxTop10Videos = document.getElementById('top10VideosChart').getContext('2d');

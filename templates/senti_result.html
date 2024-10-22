@@ -81,21 +81,21 @@
         <p><strong>Negative:</strong> {{ results['negative_percentage'] }}%</p>
         <p><strong>Neutral:</strong> {{ results['neutral_percentage'] }}%</p>
 
-        <h2>Top 10 Positive Comments</h2>
+        <h2>First 10 Positive Comments</h2>
         <ul>
             {% for comment in results['positive_comments'] %}
                 <li>{{ comment }}</li>
             {% endfor %}
         </ul>
 
-        <h2>Top 10 Negative Comments</h2>
+        <h2>First 10 Negative Comments</h2>
         <ul>
             {% for comment in results['negative_comments'] %}
                 <li>{{ comment }}</li>
             {% endfor %}
         </ul>
 
-        <h2>Top 10 Neutral Comments</h2>
+        <h2>First 10 Neutral Comments</h2>
         <ul>
             {% for comment in results['neutral_comments'] %}
                 <li>{{ comment }}</li>
