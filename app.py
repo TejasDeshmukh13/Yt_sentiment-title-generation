@@ -217,7 +217,7 @@ def forgot_password():
         If you didn't request this, feel free to ignore this email.
 
         Best regards,
-        Your Website Team
+        Yt Analyser Team
         """
 
         msg.html = f"""
@@ -226,7 +226,7 @@ def forgot_password():
         <a href="{reset_link}">Reset Password</a>
         <p>If you didn't request this, feel free to ignore this email.</p>
         <p>Best regards,</p>
-        <p>Your Website Team</p>
+        <p>Yt Analyser Team</p>
         <img src="cid:image1" alt="Reset Password" style="width: 600px; height: 600px;">
         """
 
