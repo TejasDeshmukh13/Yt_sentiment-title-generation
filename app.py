@@ -24,8 +24,7 @@ import matplotlib.pyplot as plt
 import base64
 import matplotlib
 from matplotlib import font_manager
-import re
-from bs4 import BeautifulSoup
+
 from datetime import timedelta, datetime
 import pytz
 from transformers import pipeline
@@ -217,7 +216,7 @@ def forgot_password():
         If you didn't request this, feel free to ignore this email.
 
         Best regards,
-        Yt Analyser Team
+        Around YT Team
         """
 
         msg.html = f"""
@@ -226,7 +225,7 @@ def forgot_password():
         <a href="{reset_link}">Reset Password</a>
         <p>If you didn't request this, feel free to ignore this email.</p>
         <p>Best regards,</p>
-        <p>Yt Analyser Team</p>
+        <p>Around YT Team</p>
         <img src="cid:image1" alt="Reset Password" style="width: 600px; height: 600px;">
         """
 
