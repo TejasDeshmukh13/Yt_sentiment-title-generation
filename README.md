@@ -133,19 +133,24 @@ Ensure the following dependencies are installed before setting up:
 ![image alt](https://github.com/TejasDeshmukh13/Yt_sentiment-title-generation/blob/565a8a5023ba8f14e380d7344b558e3a1381f2e2/senti/Picture2.jpg)
 
 2.YouTube Sentiment Analysis
+
 ![image alt](https://github.com/TejasDeshmukh13/Yt_sentiment-title-generation/blob/565a8a5023ba8f14e380d7344b558e3a1381f2e2/senti/Picture4.png)
 ![image alt](https://github.com/TejasDeshmukh13/Yt_sentiment-title-generation/blob/565a8a5023ba8f14e380d7344b558e3a1381f2e2/senti/Picture5.png)
 ![image alt](https://github.com/TejasDeshmukh13/Yt_sentiment-title-generation/blob/565a8a5023ba8f14e380d7344b558e3a1381f2e2/senti/Picture6.png)
 
 3.Channel Statistics
+
 ![image alt](https://github.com/TejasDeshmukh13/Yt_sentiment-title-generation/blob/565a8a5023ba8f14e380d7344b558e3a1381f2e2/senti/Picture7.png)
 ![image alt](https://github.com/TejasDeshmukh13/Yt_sentiment-title-generation/blob/565a8a5023ba8f14e380d7344b558e3a1381f2e2/senti/Picture8.png)
 ![image alt](https://github.com/TejasDeshmukh13/Yt_sentiment-title-generation/blob/565a8a5023ba8f14e380d7344b558e3a1381f2e2/senti/Picture9.png)
 
 4.Youtube Transcript Summarizer
+
 ![image alt](https://github.com/TejasDeshmukh13/Yt_sentiment-title-generation/blob/565a8a5023ba8f14e380d7344b558e3a1381f2e2/senti/Picture10.jpg)
 
+
 5.Youtube Title Generator
+
 ![image alt](https://github.com/TejasDeshmukh13/Yt_sentiment-title-generation/blob/565a8a5023ba8f14e380d7344b558e3a1381f2e2/senti/Picture11.jpg)
 
 
