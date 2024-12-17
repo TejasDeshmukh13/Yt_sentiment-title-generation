@@ -1,145 +1,161 @@
-# YouTube Sentiment Analyser and Title Generator
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/TejasDeshmukh13/Yt_sentiment-title-generation/blob/main/LICENSE)
+# 🎥 **YouTube Sentiment Analyser and Title Generator** 
 
-This project is a web-based application that provides sentiment analysis of YouTube video comments and generates suitable video titles using Natural Language Processing (NLP). It's built using **Flask**, **YouTube Data API**, **Hugging Face Transformers**, and **Python**.
+## **Overview**  
+Welcome to the **YouTube Sentiment Analyser and Title Generator** project! This web-based application leverages **Natural Language Processing (NLP)** to analyze YouTube video comments for sentiment, generate optimized video titles, and summarize video transcripts. The tool helps enhance YouTube content by providing insights and recommendations.
 
-## Features
+### **Key Features** 🚀  
+1. **YouTube Video Sentiment Analysis**  
+   - Analyze the sentiment of comments (positive, negative, neutral) on any YouTube video.  
 
-- **YouTube Video Sentiment Analysis**: Analyze the sentiment (positive, negative, neutral) of YouTube video comments.
-- **Title Recommendation**: Generate optimized video titles using NLP models.
-- **Transcript Summarization**: Automatically summarize the transcript of YouTube videos to extract key points.
-- **Channel Statistics**: Display detailed statistics about YouTube channels, such as total views, subscriber count, and more.
-- **Real-time Data**: Fetch data directly from YouTube via the YouTube Data API, ensuring up-to-date statistics and information.
+2. **Title Recommendation**  
+   - Generate optimized, catchy YouTube titles based on the video's content.  
 
-## Table of Contents
+3. **Transcript Summarization**  
+   - Summarize the YouTube video's transcript into a concise overview of the content.  
 
-- [Installation](#installation)
-- [Usage](#usage)
-- [Features](#features)
-- [Project Structure](#project-structure)
-- [Contributors](#contributors)
-- [License](#license)
+4. **Channel Statistics**  
+   - Retrieve and display channel statistics like total views, subscriber count, and more.  
+   - 📊 **Try it now**: [Channel Stats Demo](#channel-statistics)
 
-## Installation
+5. **Real-time Data Fetching**  
+   - Fetch up-to-date data directly from the YouTube Data API for accurate results.  
+   - 🔄 **Real-time Updates**: Always accurate with the latest data.
 
-### Prerequisites
+---
 
-- Python 3.x
-- Flask
-- MySQL
-- YouTube Data API Key
-- Hugging Face Transformers
-- Jinja2 for templating
-- Chart.js for visualizing data
+## **Objectives** 🎯
 
-### Setup
+The primary objectives of this project are:
+1. **Sentiment Analysis of YouTube Comments**  
+   - To provide insights into the overall mood (positive, negative, neutral) of comments on YouTube videos. This helps content creators understand their audience's reaction and engagement.
+   
+2. **Title Generation for YouTube Videos**  
+   - To automatically generate optimized video titles using NLP models, improving click-through rates and engagement on YouTube videos.
+   
+3. **Summarization of YouTube Video Transcripts**  
+   - To provide a summarized version of YouTube video transcripts, making it easier for viewers to quickly grasp the content.
 
-1. Clone the repository:
+4. **Channel Statistics Analysis**  
+   - To fetch and display channel statistics, enabling YouTubers to track their growth and performance more effectively.
 
-```bash
-git clone https://github.com/TejasDeshmukh13/Yt_sentiment-title-generation.git
-cd Yt_sentiment-title-generation
-```
+---
 
-2. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
+## **Installation** 🛠️
 
-3. Set up environment variables for your API keys and other configuration settings:
-```bash
-export YOUTUBE_API_KEY='your_api_key_here'
-```
+### **Prerequisites**  
+Ensure the following dependencies are installed before setting up:
+- **Python 3.x**
+- **Flask**: Web framework to build the application.
+- **MySQL**: For storing user and video data.
+- **YouTube Data API Key**: Required to fetch data from YouTube.
+- **Hugging Face Transformers**: For advanced NLP models.
+- **Jinja2**: HTML templating engine.
+- **Chart.js**: For generating charts (sentiment analysis distribution).
 
-4. Run the Flask app:
-```bash
-python app.py
-```
+### **Steps to Set Up**
 
-5. Visit the app in your browser:
-```bash
-http://127.0.0.1:5000/
-```
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/TejasDeshmukh13/Yt_sentiment-title-generation.git
+   cd Yt_sentiment-title-generation
+   ```
 
-## Usage
+2. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-### Sentiment Analysis
+3. **Set up environment variables:**
+   - Create a `.env` file in the project root and add:
+   ```bash
+   YOUTUBE_API_KEY='your_api_key_here'
+   ```
 
-- Enter the URL of a YouTube video to analyze its comment sentiments.<br>
-- The app will fetch the video comments and display a sentiment distribution chart (Positive, Negative, Neutral).
+4. **Run the Flask app:**
+   ```bash
+   python app.py
+   ```
 
-### Title Generation
+5. **Visit the app in your browser:**
+   - Go to [http://127.0.0.1:5000/](http://127.0.0.1:5000/) to access the web application.
 
-- For the same YouTube video, the app will recommend suitable titles based on the content of the video.
+---
 
-### Transcript Summarization
+## **Usage** 💡
 
-- Input the video link, and the app will fetch and summarize the video's transcript using NLP techniques, giving a concise overview of the content.
+### **Sentiment Analysis** 📝  
+1. **Input**: Enter the **YouTube video URL**.  
+2. **Functionality**: The app will:
+   - Fetch comments from the YouTube video.
+   - Analyze the sentiment of each comment (positive, negative, or neutral).
+   - Display a sentiment distribution chart.
+3. **Output**: A visual representation of sentiment (positive, negative, neutral).  
+   🔍 **Try it now**: Enter a video URL for sentiment analysis!
 
-## Project Structure
+### **Title Generation** 🏷️  
+1. **Input**: Enter the **YouTube video URL** (same as sentiment analysis).  
+2. **Functionality**: The app will:
+   - Generate optimized titles using the trained NLP model (T5 model).
+   - Display suggested titles tailored to the video's content.
+3. **Output**: A list of recommended titles for the video.  
+   🏷️ **Try it now**: Enter a video URL for title generation!
 
-```bash
-Yt_sentiment-title-generation/
-├── app.py                    # Main Flask application file
-├── channel.py                # Channel statistics logic
-├── channel_data.py           # Additional channel data processing logic
-├── trainmodel.py             # Model training script
-├── requirements.txt          # Dependencies for the project
-├── templates/                # Folder for HTML templates
-│   ├── forgot_password.html   # HTML for password recovery
-│   ├── index.html            # Main landing page
-│   ├── landing_page.html     # Landing page for the app
-│   ├── login.html            # User login page
-│   ├── page1.html            # Additional page 1
-│   ├── page2.html            # Additional page 2
-│   ├── profile.html          # User profile page
-│   ├── res.html              # HTML for displaying results
-│   ├── reset_password.html    # HTML for resetting passwords
-│   ├── senti_result.html      # Results page for sentiment analysis
-│   ├── sentiment.html         # Sentiment analysis input page
-│   ├── signup.html           # User signup page
-│   ├── summary.html          # Summary of results
-│   ├── titlepage.html        # Title generation page
-│   └── link.html             # HTML for link submission
-├── static/                   # Folder for static files
-│   ├── css/                  # CSS files
-│   │   ├── landing_page.css   # CSS for landing page
-│   │   ├── login.css          # CSS for login page
-│   │   ├── page1.css          # CSS for dashboard
-│   │   ├── page2.css          # CSS for channel stats
-│   │   ├── profile.css        # CSS for profile page
-│   │   ├── res.css            # CSS for results page
-│   │   ├── signup.css         # CSS for signup page
-│   │   └── styles.css         # Main stylesheet
-│   ├── js/                   # JavaScript files
-│   │   ├── landing_page.js    # JavaScript for landing page
-│   │   ├── login.js           # JavaScript for login page
-│   │   ├── page1.js           # JavaScript for dahsboard
-│   │   ├── page2.js           # JavaScript for channel stats
-│   │   ├── profile.js         # JavaScript for profile page
-│   │   ├── res.js             # JavaScript for results page
-│   │   └── scripts.js         # Main script file
-│   └── images/               # Image files 
-│       ├── Brochure Zephyr-1.pdf_compressed.pdf # Brochure PDF
-│       ├── Demo Video.mp4     # Demo video of the project
-│       ├── F1.png             # Example image
-│       ├── channel.jpg        # Channel image
-│       ├── image.png          # Other image file
-│       ├── sentiment.jpg      # Sentiment analysis image
-│       ├── sentiment_pie_chart.png # Pie chart for sentiment
-│       ├── summarizer.png     # Image for summarization
-│       ├── title.png          # Title generation image
-│       └── other_image.png    # Another image file
-├── utils/                    # Utility functions
-│   └── helpers.py            # Helper functions for the app
-└── README.md                 # Project documentation
-```
+### **Transcript Summarization** 🧠  
+1. **Input**: Enter the **YouTube video URL**.
+2. **Functionality**: The app will:
+   - Fetch and summarize the transcript of the YouTube video.
+   - Provide a concise summary, focusing on key points.
+3. **Output**: A summary of the video transcript.  
+   🧠 **Try it now**: Enter a video URL to get the summary!
 
-## Contributors
-<ul>
-<a href="https://github.com/kisanjena">KisanKumar Jena</a><br>
-<a href="https://github.com/sakshe27">Sakshi Kadam</a><br>
-<a href="https://github.com/PriyankaB26">Priyanka Barman</a><br>
-<a href="https://github.com/TejasDeshmukh13">Tejas Deshmukh</a>
-</ul>
+### **Channel Statistics** 📊  
+1. **Input**: Enter the **YouTube channel ID** or URL.
+2. **Functionality**: The app will:
+   - Fetch channel details like total views, subscriber count, and more.
+   - Display detailed channel statistics.
+3. **Output**: Channel stats, including views, subscribers, and more.  
+   📊 **Try it now**: Enter a channel ID to fetch statistics!
+
+---
+
+## **📂 Implementation Features** 
+
+### **System Architecture** 
+
+[image alt](https://github.com/TejasDeshmukh13/Yt_sentiment-title-generation/blob/565a8a5023ba8f14e380d7344b558e3a1381f2e2/senti/Picture1.png)
+
+
+## **Designs**0)
+
+1.Dashboard
+
+[image alt](https://github.com/TejasDeshmukh13/Yt_sentiment-title-generation/blob/565a8a5023ba8f14e380d7344b558e3a1381f2e2/senti/Picture2.jpg)
+
+2.YouTube Sentiment Analysis
+[image alt](https://github.com/TejasDeshmukh13/Yt_sentiment-title-generation/blob/565a8a5023ba8f14e380d7344b558e3a1381f2e2/senti/Picture4.png)
+[image alt](https://github.com/TejasDeshmukh13/Yt_sentiment-title-generation/blob/565a8a5023ba8f14e380d7344b558e3a1381f2e2/senti/Picture5.png)
+[image alt](https://github.com/TejasDeshmukh13/Yt_sentiment-title-generation/blob/565a8a5023ba8f14e380d7344b558e3a1381f2e2/senti/Picture6.png)
+
+3.Channel Statistics
+[image alt](https://github.com/TejasDeshmukh13/Yt_sentiment-title-generation/blob/565a8a5023ba8f14e380d7344b558e3a1381f2e2/senti/Picture7.png)
+[image alt](https://github.com/TejasDeshmukh13/Yt_sentiment-title-generation/blob/565a8a5023ba8f14e380d7344b558e3a1381f2e2/senti/Picture8.png)
+[image alt](https://github.com/TejasDeshmukh13/Yt_sentiment-title-generation/blob/565a8a5023ba8f14e380d7344b558e3a1381f2e2/senti/Picture9.png)
+
+4.Youtube Transcript Summarizer
+[image alt](https://github.com/TejasDeshmukh13/Yt_sentiment-title-generation/blob/565a8a5023ba8f14e380d7344b558e3a1381f2e2/senti/Picture10.jpg)
+
+5.Youtube Title Generator
+[image alt](https://github.com/TejasDeshmukh13/Yt_sentiment-title-generation/blob/565a8a5023ba8f14e380d7344b558e3a1381f2e2/senti/Picture11.jpg)
+
+
+
+
+
+
+
+
+---
+
+
+
