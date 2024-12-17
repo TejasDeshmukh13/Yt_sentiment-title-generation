@@ -126,7 +126,7 @@ Ensure the following dependencies are installed before setting up:
 ![image alt](https://github.com/TejasDeshmukh13/Yt_sentiment-title-generation/blob/565a8a5023ba8f14e380d7344b558e3a1381f2e2/senti/Picture1.png)
 
 
-## **Designs**0)
+## **Designs**
 
 1.Dashboard
 
